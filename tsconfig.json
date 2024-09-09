@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    /*Shadcn*/
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@api": ["./src/api/index.ts"],
+      "@constants": ["./src/constants/index.ts"],
+      "@atoms": ["./src/components/atoms/index.ts"],
+      "@pages": ["./src/components/pages/index.ts"],
+      "@organisms": ["./src/components/organisms/index.ts"],
+      "@helpers": ["./src/helpers/index.ts"],
+      "@types": ["./src/types/index.ts"],
+      "@routes": ["./src/routes/index.ts"],
+      "@store": ["./src/store/index.ts"]
+    },
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"]
+}
