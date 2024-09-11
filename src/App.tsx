@@ -89,7 +89,7 @@ export const App: FC = () => {
   const handleFetchLeads = async () => {
     try {
       setIsLoading(true);
-      const leads = await fetchLeads().then((result) => result._embedded as any);
+      const leads = await fetchLeads().then((result) => result._embedded.leads[0]);
       setLeads(leads);
     } catch (error) {
       console.error('Failed fetch login', error);
@@ -117,7 +117,7 @@ export const App: FC = () => {
         </TableHeader>
         <TableBody>
           <TableRow>
-            <TableCell className="font-medium">INV001</TableCell>
+            <TableCell className="font-medium">{leads ? `${leads.id}` : 'gpo'}</TableCell>
             <TableCell>Paid</TableCell>
             <TableCell>Credit Card</TableCell>
             <TableCell className="text-right">$250.00</TableCell>

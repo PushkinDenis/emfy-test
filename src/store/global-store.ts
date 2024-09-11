@@ -1,8 +1,9 @@
 import { create } from 'zustand';
+import { ILead } from '@api';
 
 export interface IGlobalStore {
-  leads?: unknown;
-  setLeads: (leads?: unknown) => void;
+  leads?: ILead;
+  setLeads: (leads?: ILead) => void;
 }
 
 export const useGlobalStore = create<IGlobalStore>((set) => ({

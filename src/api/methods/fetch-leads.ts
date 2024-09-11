@@ -1,6 +1,6 @@
 import { ISendRequestOptions } from '@/api/types';
 
-interface ILead {
+export interface ILead {
   account_id: number;
   closed_at: null;
   closest_task_at: number;
