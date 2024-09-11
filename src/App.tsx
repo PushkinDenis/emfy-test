@@ -17,7 +17,6 @@ export const App: FC = () => {
   const [isLoadig, setIsLoading] = useState(false);
   const { leads, setLeads } = useGlobalStore();
   const [displayedLeads, setDisplayedLeads] = useState<ILead[]>([]);
-  la;
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
