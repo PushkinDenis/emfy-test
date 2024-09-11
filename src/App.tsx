@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { fetchLeads } from '@/api/api-clients';
+import { fetchLeads, fetchLeadById } from '@/api/api-clients';
 import {
   Table,
   TableBody,
@@ -17,8 +17,27 @@ export const App: FC = () => {
   const [isLoadig, setIsLoading] = useState(false);
   const { leads, setLeads } = useGlobalStore();
   const [displayedLeads, setDisplayedLeads] = useState<ILead[]>([]);
+  const [currentLead, setCurrentLead] = useState<any>(null);
 
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  // const getCurrentUnixTimestamp = (): number => {
+  //   return Math.floor(Date.now() / 1000);
+  // };
+
+  const handleFetchLeadById = async (id: string) => {
+    try {
+      setIsLoading(true);
+      const lead = await fetchLeadById(id);
+      setCurrentLead(lead);
+    } catch (error) {
+      console.error('Failed fetch login', error);
+    } finally {
+      setIsLoading(false);
+      console.log(leads);
+      console.log(isLoadig);
+    }
+  };
 
   const handleFetchLeads = async () => {
     try {
@@ -55,10 +74,11 @@ export const App: FC = () => {
         <TableBody>
           {leads ? (
             displayedLeads.map((lead, index) => (
-              <TableRow key={`lead ${index}`}>
+              <TableRow key={`lead ${index}`} onClick={() => handleFetchLeadById(`${lead.id}`)}>
                 <TableCell className="font-medium">{lead.name}</TableCell>
                 <TableCell className="font-medium">{lead.price}</TableCell>
                 <TableCell className="font-medium">{lead.id}</TableCell>
+                <TableCell className="font-medium">{lead.closest_task_at}</TableCell>
               </TableRow>
             ))
           ) : (
@@ -68,6 +88,15 @@ export const App: FC = () => {
           )}
         </TableBody>
       </Table>
+      <div className="flex flex-col justify-center items-center gap-4 font-medium ">
+        {currentLead && (
+          <>
+            <span>{currentLead.name}</span>
+            <span>{currentLead.id} </span>
+            <span>{Date.now()}</span>
+          </>
+        )}
+      </div>
     </div>
   );
 };

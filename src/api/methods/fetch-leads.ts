@@ -38,7 +38,17 @@ export interface ILeadsResponse {
   _embedded: IEmbeddedLeads;
 }
 
+interface IFetchLeadById {
+  method: string;
+  path: string;
+}
+
 export const fetchLeadsOptions: ISendRequestOptions = {
   method: 'GET',
   path: '/api/v4/leads',
 };
+
+export const fetchLeadByIdOptions = (id: string): IFetchLeadById => ({
+  method: 'GET',
+  path: id,
+});
