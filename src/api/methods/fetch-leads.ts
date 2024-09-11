@@ -39,16 +39,22 @@ export interface ILeadsResponse {
 }
 
 interface IFetchLeadById {
-  method: string;
+  method: 'GET';
   path: string;
 }
 
-export const fetchLeadsOptions: ISendRequestOptions = {
+export const fetchTotalLeadsOptions: ISendRequestOptions = {
   method: 'GET',
   path: '/api/v4/leads',
 };
 
+export const fetchLeadsOptions = (param: string): ISendRequestOptions => ({
+  method: 'GET',
+  path: `/api/v4/leads?limit=2&page=${param}`,
+  param: param,
+});
+
 export const fetchLeadByIdOptions = (id: string): IFetchLeadById => ({
   method: 'GET',
-  path: id,
+  path: `/api/v4/leads/${id}`,
 });

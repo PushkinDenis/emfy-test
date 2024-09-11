@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { fetchLeads, fetchLeadById } from '@/api/api-clients';
+import { fetchTotalLeads, fetchLeadById } from '@/api/api-clients';
 import {
   Table,
   TableBody,
@@ -42,7 +42,7 @@ export const App: FC = () => {
   const handleFetchLeads = async () => {
     try {
       setIsLoading(true);
-      const leads = await fetchLeads().then((result) => result._embedded.leads);
+      const leads = await fetchTotalLeads().then((result) => result._embedded.leads);
       setLeads(leads);
       setDisplayedLeads([]);
 

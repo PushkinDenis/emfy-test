@@ -1,4 +1,10 @@
-import { ISendRequestOptions, fetchLeadsOptions, ILeadsResponse } from '@/api';
+import {
+  ISendRequestOptions,
+  fetchLeadsOptions,
+  ILeadsResponse,
+  fetchTotalLeadsOptions,
+  fetchLeadByIdOptions,
+} from '@/api';
 import { ACCESS_TOKEN } from '@constants';
 
 interface ISendRequestProps {
@@ -31,15 +37,25 @@ export const sendRequest = async <R>({ options, body }: ISendRequestProps): Prom
   return data;
 };
 
-export const fetchLeads = async (): Promise<ILeadsResponse> => {
+export const fetchTotalLeads = async (): Promise<ILeadsResponse> => {
   return await sendRequest<ILeadsResponse>({
-    options: fetchLeadsOptions,
+    options: fetchTotalLeadsOptions,
+  });
+};
+
+export const fetchLeads = async (param: string): Promise<ILeadsResponse> => {
+  const options = fetchLeadsOptions(param);
+
+  return await sendRequest<ILeadsResponse>({
+    options: options,
   });
 };
 
 export const fetchLeadById = async (id: string): Promise<ILeadsResponse> => {
+  const options = fetchLeadByIdOptions(id);
+
   return await sendRequest<ILeadsResponse>({
-    options: { method: 'GET', path: '/api/v4/leads', param: `/${id}` },
+    options: options,
   });
 };
 
