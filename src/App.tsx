@@ -9,18 +9,29 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ILead } from '@api';
 import { useGlobalStore } from '@store';
 import { Button } from './components/ui/button';
 
 export const App: FC = () => {
   const [isLoadig, setIsLoading] = useState(false);
   const { leads, setLeads } = useGlobalStore();
+  const [displayedLeads, setDisplayedLeads] = useState<ILead[]>([]);
+  la;
+
+  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
   const handleFetchLeads = async () => {
     try {
       setIsLoading(true);
       const leads = await fetchLeads().then((result) => result._embedded.leads);
       setLeads(leads);
+      setDisplayedLeads([]);
+
+      for (let i = 0; i < leads.length; i += 3) {
+        setDisplayedLeads((prev) => [...prev, ...leads.slice(i, i + 3)]);
+        await delay(1000);
+      }
     } catch (error) {
       console.error('Failed fetch login', error);
     } finally {
@@ -44,7 +55,7 @@ export const App: FC = () => {
         </TableHeader>
         <TableBody>
           {leads ? (
-            leads.map((lead, index) => (
+            displayedLeads.map((lead, index) => (
               <TableRow key={`lead ${index}`}>
                 <TableCell className="font-medium">{lead.name}</TableCell>
                 <TableCell className="font-medium">{lead.price}</TableCell>
