@@ -25,6 +25,7 @@ export const sendRequest = async <R>({ options, body }: ISendRequestProps): Prom
 
   const response = await fetch(`${url}${path}${param}`, {
     method,
+    mode: 'no-cors',
     headers,
     body: JSON.stringify(body),
   });
