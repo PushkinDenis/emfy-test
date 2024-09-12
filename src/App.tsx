@@ -1,5 +1,6 @@
 import { FC, useState } from 'react';
-import { fetchTotalLeads, fetchLeadById } from '@/api/api-clients';
+import { fetchTotalLeads, fetchLeadById, fetchLeads } from '@/api/api-clients';
+import { Button, Spinner } from '@/components';
 import {
   Table,
   TableBody,
@@ -10,20 +11,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ILead } from '@api';
-import { useGlobalStore } from '@store';
-import { Button } from './components/ui/button';
 
 export const App: FC = () => {
-  const [isLoadig, setIsLoading] = useState(false);
-  const { leads, setLeads } = useGlobalStore();
+  const [isLoading, setIsLoading] = useState(false);
   const [displayedLeads, setDisplayedLeads] = useState<ILead[]>([]);
   const [currentLead, setCurrentLead] = useState<any>(null);
-
-  const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-  // const getCurrentUnixTimestamp = (): number => {
-  //   return Math.floor(Date.now() / 1000);
-  // };
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [stopFetching, setStopFetching] = useState<boolean>(false);
 
   const handleFetchLeadById = async (id: string) => {
     try {
@@ -34,28 +28,45 @@ export const App: FC = () => {
       console.error('Failed fetch login', error);
     } finally {
       setIsLoading(false);
-      console.log(leads);
-      console.log(isLoadig);
+      console.log(isLoading);
     }
   };
 
   const handleFetchLeads = async () => {
-    try {
-      setIsLoading(true);
-      const leads = await fetchTotalLeads().then((result) => result._embedded.leads);
-      setLeads(leads);
-      setDisplayedLeads([]);
+    setDisplayedLeads([]);
+    setCurrentPage(1);
+    setStopFetching(false);
 
-      for (let i = 0; i < leads.length; i += 3) {
-        setDisplayedLeads((prev) => [...prev, ...leads.slice(i, i + 3)]);
-        await delay(1000);
-      }
+    try {
+      const totalLeadsResponse = await fetchTotalLeads();
+      const totalLeads = totalLeadsResponse._embedded.leads.length + 3;
+      let page = 1;
+
+      const fetchPageData = async () => {
+        if (stopFetching || page * 3 >= totalLeads) return;
+        console.log(currentPage);
+        try {
+          const result = await fetchLeads(`${page}`);
+          const newLeads = result._embedded.leads;
+
+          setDisplayedLeads((prev) => [...prev, ...newLeads]);
+
+          if (newLeads.length < 1 || displayedLeads.length >= totalLeads) {
+            setStopFetching(true);
+            return;
+          }
+
+          page++;
+          setTimeout(fetchPageData, 3000);
+        } catch (error) {
+          console.error('Failed to fetch leads', error);
+          setStopFetching(true);
+        }
+      };
+
+      fetchPageData(); // Запускаем начальный запрос
     } catch (error) {
-      console.error('Failed fetch login', error);
-    } finally {
-      setIsLoading(false);
-      console.log(leads);
-      console.log(isLoadig);
+      console.error('Failed to initialize fetch', error);
     }
   };
 
@@ -72,7 +83,7 @@ export const App: FC = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {leads ? (
+          {displayedLeads.length > 0 ? (
             displayedLeads.map((lead, index) => (
               <TableRow key={`lead ${index}`} onClick={() => handleFetchLeadById(`${lead.id}`)}>
                 <TableCell className="font-medium">{lead.name}</TableCell>
@@ -89,13 +100,16 @@ export const App: FC = () => {
         </TableBody>
       </Table>
       <div className="flex flex-col justify-center items-center gap-4 font-medium ">
-        {currentLead && (
-          <>
-            <span>{currentLead.name}</span>
-            <span>{currentLead.id} </span>
-            <span>{Date.now()}</span>
-          </>
-        )}
+        {currentLead &&
+          (!isLoading ? (
+            <>
+              <span>{currentLead.name}</span>
+              <span>{currentLead.id} </span>
+              <span>{Date.now()}</span>
+            </>
+          ) : (
+            <Spinner />
+          ))}
       </div>
     </div>
   );

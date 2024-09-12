@@ -50,7 +50,7 @@ export const fetchTotalLeadsOptions: ISendRequestOptions = {
 
 export const fetchLeadsOptions = (param: string): ISendRequestOptions => ({
   method: 'GET',
-  path: `/api/v4/leads?limit=2&page=${param}`,
+  path: `/api/v4/leads?limit=3&page=`,
   param: param,
 });
 
