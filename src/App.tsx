@@ -24,12 +24,10 @@ export const App: FC = () => {
 
   const handleFetchLeadById = async (id: string) => {
     try {
-      // Сброс состояния предыдущей кликнутой строки
       if (clickedRow) {
         setClickedRow(null);
       }
 
-      // Установить состояние загрузки для новой строки
       setLoadingRows((prev) => ({
         ...prev,
         [id]: true,
@@ -38,14 +36,11 @@ export const App: FC = () => {
       setIsLoading(true);
       const lead = await fetchLeadById(id);
       setCurrentLead(lead);
-
-      // Установить кликнутую строку
       setClickedRow(id);
     } catch (error) {
       console.error('Failed to fetch lead', error);
       console.log(currentPage);
     } finally {
-      // Убрать состояние загрузки для строки
       setLoadingRows((prev) => ({
         ...prev,
         [id]: false,
