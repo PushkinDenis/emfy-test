@@ -6,8 +6,6 @@ import {
   fetchLeadByIdOptions,
 } from '@/api';
 
-// import { ACCESS_TOKEN } from '@constants';
-
 interface ISendRequestProps {
   options: ISendRequestOptions;
   body?: unknown;

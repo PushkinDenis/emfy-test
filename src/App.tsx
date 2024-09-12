@@ -1,7 +1,8 @@
 import { FC, useState } from 'react';
 import { fetchTotalLeads, fetchLeadById, fetchLeads } from '@/api/api-clients';
-import { Button, Spinner } from '@/components';
 import {
+  Button,
+  Spinner,
   Table,
   TableBody,
   TableCaption,
@@ -9,7 +10,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from '@/components';
 import { ILead } from '@api';
 
 export const App: FC = () => {
@@ -64,10 +65,46 @@ export const App: FC = () => {
         }
       };
 
-      fetchPageData(); // Запускаем начальный запрос
+      fetchPageData();
     } catch (error) {
       console.error('Failed to initialize fetch', error);
     }
+  };
+
+  const taskStatus = (deadlineTimestamp: number) => {
+    const deadlineDate = new Date(deadlineTimestamp * 1000);
+    const today = new Date();
+
+    const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+    const deadlineDateAtMidnight = new Date(
+      deadlineDate.getFullYear(),
+      deadlineDate.getMonth(),
+      deadlineDate.getDate(),
+    );
+
+    let color;
+    if (todayDate < deadlineDateAtMidnight) {
+      color = 'green';
+    } else if (todayDate > deadlineDateAtMidnight) {
+      color = 'red';
+    } else {
+      color = 'yellow';
+    }
+
+    return (
+      <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" fill={color} />
+      </svg>
+    );
+  };
+
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp * 1000);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
   };
 
   return (
@@ -105,7 +142,10 @@ export const App: FC = () => {
             <>
               <span>{currentLead.name}</span>
               <span>{currentLead.id} </span>
-              <span>{Date.now()}</span>
+              <div className="flex gap-1">
+                <span>{formatDate(currentLead.closest_task_at)}</span>
+                {taskStatus(+`${currentLead.closest_task_at}`)}
+              </div>
             </>
           ) : (
             <Spinner />
