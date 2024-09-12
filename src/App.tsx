@@ -18,18 +18,39 @@ export const App: FC = () => {
   const [displayedLeads, setDisplayedLeads] = useState<ILead[]>([]);
   const [currentLead, setCurrentLead] = useState<any>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [stopFetching, setStopFetching] = useState<boolean>(false);
+  const [stopFetching, setStopFetching] = useState(false);
+  const [clickedRow, setClickedRow] = useState<string | null>(null);
+  const [loadingRows, setLoadingRows] = useState<{ [id: string]: boolean }>({});
 
   const handleFetchLeadById = async (id: string) => {
     try {
+      // Сброс состояния предыдущей кликнутой строки
+      if (clickedRow) {
+        setClickedRow(null);
+      }
+
+      // Установить состояние загрузки для новой строки
+      setLoadingRows((prev) => ({
+        ...prev,
+        [id]: true,
+      }));
+
       setIsLoading(true);
       const lead = await fetchLeadById(id);
       setCurrentLead(lead);
+
+      // Установить кликнутую строку
+      setClickedRow(id);
     } catch (error) {
-      console.error('Failed fetch login', error);
+      console.error('Failed to fetch lead', error);
+      console.log(currentPage);
     } finally {
+      // Убрать состояние загрузки для строки
+      setLoadingRows((prev) => ({
+        ...prev,
+        [id]: false,
+      }));
       setIsLoading(false);
-      console.log(isLoading);
     }
   };
 
@@ -45,7 +66,6 @@ export const App: FC = () => {
 
       const fetchPageData = async () => {
         if (stopFetching || page * 3 >= totalLeads) return;
-        console.log(currentPage);
         try {
           const result = await fetchLeads(`${page}`);
           const newLeads = result._embedded.leads;
@@ -65,7 +85,7 @@ export const App: FC = () => {
         }
       };
 
-      fetchPageData();
+      await fetchPageData();
     } catch (error) {
       console.error('Failed to initialize fetch', error);
     }
@@ -93,7 +113,7 @@ export const App: FC = () => {
     }
 
     return (
-      <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <svg width="14" height="14" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <circle cx="12" cy="12" r="10" fill={color} />
       </svg>
     );
@@ -125,7 +145,18 @@ export const App: FC = () => {
               <TableRow key={`lead ${index}`} onClick={() => handleFetchLeadById(`${lead.id}`)}>
                 <TableCell className="font-medium">{lead.name}</TableCell>
                 <TableCell className="font-medium">{lead.price}</TableCell>
-                <TableCell className="font-medium">{lead.id}</TableCell>
+                <TableCell className="font-medium">
+                  {loadingRows[lead.id] ? (
+                    <Spinner />
+                  ) : clickedRow === `${lead.id}` ? (
+                    <div className="flex gap-1 justify-center items-center">
+                      <span>{formatDate(lead.closest_task_at)}</span>
+                      {taskStatus(+`${lead.closest_task_at}`)}
+                    </div>
+                  ) : (
+                    lead.id
+                  )}
+                </TableCell>
               </TableRow>
             ))
           ) : (
@@ -135,7 +166,7 @@ export const App: FC = () => {
           )}
         </TableBody>
       </Table>
-      <div className="flex flex-col text-white justify-center rounded-xl items-center gap-4 font-medium border-2  border-white bg-black p-2 border-r">
+      <div className="flex flex-col text-white justify-center rounded-xl items-center gap-4 font-medium border-2 border-white bg-black p-2 border-r">
         {currentLead &&
           (!isLoading ? (
             <>
