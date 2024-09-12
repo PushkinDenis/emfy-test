@@ -18,13 +18,7 @@
       "@/*": ["./src/*"],
       "@api": ["./src/api/index.ts"],
       "@constants": ["./src/constants/index.ts"],
-      "@atoms": ["./src/components/atoms/index.ts"],
-      "@pages": ["./src/components/pages/index.ts"],
-      "@organisms": ["./src/components/organisms/index.ts"],
-      "@helpers": ["./src/helpers/index.ts"],
-      "@types": ["./src/types/index.ts"],
-      "@routes": ["./src/routes/index.ts"],
-      "@store": ["./src/store/index.ts"]
+      "@types": ["./src/types/index.ts"]
     },
     /* Linting */
     "strict": true,

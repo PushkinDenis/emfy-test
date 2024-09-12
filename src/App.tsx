@@ -40,7 +40,7 @@ export const App: FC = () => {
 
     try {
       const totalLeadsResponse = await fetchTotalLeads();
-      const totalLeads = totalLeadsResponse._embedded.leads.length + 3;
+      const totalLeads = totalLeadsResponse._embedded.leads.length;
       let page = 1;
 
       const fetchPageData = async () => {
@@ -126,7 +126,6 @@ export const App: FC = () => {
                 <TableCell className="font-medium">{lead.name}</TableCell>
                 <TableCell className="font-medium">{lead.price}</TableCell>
                 <TableCell className="font-medium">{lead.id}</TableCell>
-                <TableCell className="font-medium">{lead.closest_task_at}</TableCell>
               </TableRow>
             ))
           ) : (
@@ -136,7 +135,7 @@ export const App: FC = () => {
           )}
         </TableBody>
       </Table>
-      <div className="flex flex-col justify-center items-center gap-4 font-medium ">
+      <div className="flex flex-col text-white justify-center rounded-xl items-center gap-4 font-medium border-2  border-white bg-black p-2 border-r">
         {currentLead &&
           (!isLoading ? (
             <>
