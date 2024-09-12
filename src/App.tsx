@@ -58,7 +58,7 @@ export const App: FC = () => {
           }
 
           page++;
-          setTimeout(fetchPageData, 3000);
+          setTimeout(fetchPageData, 1000);
         } catch (error) {
           console.error('Failed to fetch leads', error);
           setStopFetching(true);
