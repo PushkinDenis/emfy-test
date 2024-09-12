@@ -203,7 +203,7 @@ export const App: FC = () => {
 //     console.error('Ошибка:', error.message);
 //   });
 
-// const subdomain = 'denisp9831'; // Ваш поддомен
+// const subdomain = 'denisp9831';
 // const url = `https://cors-anywhere.herokuapp.com/https://${subdomain}.amocrm.ru/api/v4/leads`;
 
 // fetch(url, {
