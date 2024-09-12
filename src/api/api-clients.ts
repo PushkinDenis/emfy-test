@@ -21,11 +21,10 @@ export const sendRequest = async <R>({ options, body }: ISendRequestProps): Prom
     Authorization: `Bearer ${ACCESS_TOKEN}`,
   });
 
-  const url = `https://denisp9831.amocrm.ru/`;
+  const url = `https://thingproxy.freeboard.io/fetch/https://denisp9831.amocrm.ru/`;
 
   const response = await fetch(`${url}${path}${param}`, {
     method,
-    mode: 'no-cors',
     headers,
     body: JSON.stringify(body),
   });
